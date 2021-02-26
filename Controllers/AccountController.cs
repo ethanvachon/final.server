@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace final.server.Controllers
 {
   [ApiController]
-  [Route("[controller]")]
+  [Route("api/[controller]")]
   [Authorize]
   public class AccountController : ControllerBase
   {
