@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CodeWorks.Auth0Provider;
 using final.server.Models;
@@ -12,19 +14,35 @@ namespace final.server.Controllers
   public class VaultsController : ControllerBase
   {
     private readonly VaultsService _vs;
+    private readonly KeepsService _ks;
 
-    public VaultsController(VaultsService vs)
+    public VaultsController(VaultsService vs, KeepsService ks)
     {
       _vs = vs;
+      _ks = ks;
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<Vault>> GetOne(int id)
+    [HttpGet("{id}/keeps")]
+    public async Task<ActionResult<IEnumerable<VaultKeepsViewModel>>> GetKeepsByVaultAsync(int id)
     {
       try
       {
         Profile userInfo = await HttpContext.GetUserInfoAsync<Profile>();
-        return Ok(_vs.GetOne(id, userInfo.Id));
+        Vault vault = _vs.GetOne(id);
+        return Ok(_ks.GetByVaultId(id, userInfo.Id, vault));
+      }
+      catch (System.Exception e)
+      {
+        return BadRequest(e.Message);
+      }
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<Vault> GetOne(int id)
+    {
+      try
+      {
+        return Ok(_vs.GetOne(id));
       }
       catch (System.Exception e)
       {

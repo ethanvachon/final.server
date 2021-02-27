@@ -22,9 +22,39 @@ namespace final.server.Repositories
       v.*,
       pr.*
       FROM vaults v
-      JOIN profiles pr On vault.creatorId = profile.id
-      WHERE vault.id = @vaultId;";
+      JOIN profiles pr On v.creatorId = pr.id
+      WHERE v.id = @vaultId;";
       return _db.Query<Vault, Profile, Vault>(sql, (vault, profile) => { vault.Creator = profile; return vault; }, new { vaultId }, splitOn: "id").FirstOrDefault();
+    }
+
+    internal int Create(Vault newVault)
+    {
+      string sql = @"
+      INSERT INTO vaults
+      (name, description, isPrivate, creatorId)
+      VALUES
+      (@Name, @Description, @IsPrivate, @CreatorId);
+      SELECT LAST_INSERT_ID()";
+      return _db.ExecuteScalar<int>(sql, newVault);
+    }
+
+    internal Vault Edit(Vault editVault)
+    {
+      string sql = @"
+      UPDATE vaults
+      SET
+      name = @Name,
+      description = @Description,
+      isPrivate = @IsPrivate
+      WHERE id = @id;";
+      _db.Execute(sql, editVault);
+      return editVault;
+    }
+
+    internal void Delete(int id)
+    {
+      string sql = "DELETE FROM vaults WHERE id = @id LIMIT 1";
+      _db.Execute(sql, new { id });
     }
   }
 }

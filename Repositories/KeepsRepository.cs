@@ -63,6 +63,11 @@ namespace final.server.Repositories
       return editKeep;
     }
 
+    internal IEnumerable<VaultKeepsViewModel> GetByVault(int id)
+    {
+      throw new NotImplementedException();
+    }
+
     internal void Delete(int keepId)
     {
       string sql = "DELETE FROM keeps WHERE id = @keepId LIMIT 1";

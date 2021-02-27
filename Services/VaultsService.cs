@@ -13,7 +13,7 @@ namespace final.server.Services
       _repo = repo;
     }
 
-    internal object GetOne(int vaultId, string userId)
+    internal Vault GetOne(int vaultId)
     {
 
       Vault vault = _repo.Get(vaultId);
@@ -21,30 +21,46 @@ namespace final.server.Services
       {
         throw new Exception("invalid id");
       }
-      if (vault.CreatorId != userId)
+      if (vault.IsPrivate)
       {
-        if (vault.IsPrivate)
-        {
-          throw new Exception("not authorized");
-        }
-        return vault;
+        throw new Exception("not authorized");
       }
       return vault;
     }
 
     internal Vault Create(Vault newVault)
     {
-      throw new NotImplementedException();
+      newVault.Id = _repo.Create(newVault);
+      return newVault;
     }
 
-    internal object Edit(Vault editVault, string id)
+    internal Vault Edit(Vault editVault, string id)
     {
-      throw new NotImplementedException();
+      Vault vault = _repo.Get(editVault.Id);
+      if (vault == null)
+      {
+        throw new Exception("invalid id");
+      }
+      if (vault.CreatorId != id)
+      {
+        throw new Exception("cannot edit Vault if you aren't the creator");
+      }
+      return _repo.Edit(editVault);
     }
 
-    internal object Delete(int id1, string id2)
+    internal string Delete(int id, string accountId)
     {
-      throw new NotImplementedException();
+      Vault preDelete = _repo.Get(id);
+      if (preDelete == null)
+      {
+        throw new Exception("invalid id");
+      }
+      if (preDelete.CreatorId != accountId)
+      {
+        throw new Exception("cannot delete if you are not the creator");
+      }
+      _repo.Delete(id);
+      return "deleted";
     }
   }
 }

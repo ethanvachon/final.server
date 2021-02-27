@@ -11,4 +11,9 @@ namespace final.server.Models
     public int Keeps { get; set; }
     public Profile Creator { get; set; }
   }
+
+  public class VaultKeepsViewModel : Keep
+  {
+    public int VaultKeepId { get; set; }
+  }
 }

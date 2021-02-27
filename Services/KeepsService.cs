@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using final.server.Exceptions;
 using final.server.Models;
 using final.server.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace final.server.Services
 {
@@ -50,6 +51,19 @@ namespace final.server.Services
         throw new NotAuthorized("cannot edit keep if you aren't the creator");
       }
       return _repo.Edit(editKeep);
+    }
+
+    internal IEnumerable<VaultKeepsViewModel> GetByVaultId(int id, string userId, Vault vault)
+    {
+      if (vault.IsPrivate == true)
+      {
+        if (vault.CreatorId == userId)
+        {
+          return _repo.GetByVault(id);
+        }
+        throw new NotAuthorized("this vault is private");
+      }
+      return _repo.GetByVault(id);
     }
 
     internal string Delete(int keepId, string accountId)
