@@ -53,16 +53,8 @@ namespace final.server.Services
       return _repo.Edit(editKeep);
     }
 
-    internal IEnumerable<VaultKeepsViewModel> GetByVaultId(int id, string userId, Vault vault)
+    internal IEnumerable<VaultKeepsViewModel> GetByVaultId(int id)
     {
-      if (vault.IsPrivate == true)
-      {
-        if (vault.CreatorId == userId)
-        {
-          return _repo.GetByVault(id);
-        }
-        throw new NotAuthorized("this vault is private");
-      }
       return _repo.GetByVault(id);
     }
 

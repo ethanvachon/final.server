@@ -27,9 +27,22 @@ namespace final.server.Controllers
     {
       try
       {
-        Profile userInfo = await HttpContext.GetUserInfoAsync<Profile>();
+        // Profile userInfo = await HttpContext.GetUserInfoAsync<Profile>();
         Vault vault = _vs.GetOne(id);
-        return Ok(_ks.GetByVaultId(id, userInfo.Id, vault));
+        if (vault.IsPrivate == true)
+        {
+          if (await HttpContext.GetUserInfoAsync<Profile>() != null)
+          {
+            Profile userInfo = await HttpContext.GetUserInfoAsync<Profile>();
+            if (userInfo.Id == vault.CreatorId)
+            {
+              return Ok(_ks.GetByVaultId(id));
+            }
+            return BadRequest("this vault is private");
+          }
+          return BadRequest("this vault is private");
+        }
+        return Ok(_ks.GetByVaultId(id));
       }
       catch (System.Exception e)
       {

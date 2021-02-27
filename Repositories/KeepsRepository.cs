@@ -65,7 +65,17 @@ namespace final.server.Repositories
 
     internal IEnumerable<VaultKeepsViewModel> GetByVault(int id)
     {
-      throw new NotImplementedException();
+      string sql = @"
+      SELECT
+      k.*,
+      vk.id as VaultKeepId,
+      pr.*
+      FROM vaultkeeps vk
+      JOIN keeps k ON vk.keepId = k.id
+      JOIN profiles pr ON k.creatorId = pr.id
+      WHERE vaultId = @id
+      ";
+      return _db.Query<VaultKeepsViewModel, Profile, VaultKeepsViewModel>(sql, (vaultKeepsViewModel, profile) => { vaultKeepsViewModel.Creator = profile; return vaultKeepsViewModel; }, new { id }, splitOn: "id");
     }
 
     internal void Delete(int keepId)
