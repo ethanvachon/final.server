@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using final.server.Models;
 using final.server.Repositories;
 
@@ -68,7 +70,8 @@ namespace final.server.Services
 
     internal object GetByProfile(string id)
     {
-      throw new NotImplementedException();
+      IEnumerable<Vault> vaults = _repo.GetByProfile(id);
+      return vaults.ToList().FindAll(v => v.IsPrivate == false);
     }
 
     internal string Delete(int id, string accountId)
