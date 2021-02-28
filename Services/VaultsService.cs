@@ -27,6 +27,24 @@ namespace final.server.Services
       }
       return vault;
     }
+    internal Vault GetOne(int vaultId, string userId)
+    {
+
+      Vault vault = _repo.Get(vaultId);
+      if (vault == null)
+      {
+        throw new Exception("invalid id");
+      }
+      if (vault.IsPrivate)
+      {
+        if (vault.CreatorId == userId)
+        {
+          return vault;
+        }
+        throw new Exception("not authorized");
+      }
+      return vault;
+    }
 
     internal Vault Create(Vault newVault)
     {
@@ -46,6 +64,11 @@ namespace final.server.Services
         throw new Exception("cannot edit Vault if you aren't the creator");
       }
       return _repo.Edit(editVault);
+    }
+
+    internal object GetByProfile(string id)
+    {
+      throw new NotImplementedException();
     }
 
     internal string Delete(int id, string accountId)

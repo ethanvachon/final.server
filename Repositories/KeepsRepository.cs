@@ -50,6 +50,18 @@ namespace final.server.Repositories
       return _db.ExecuteScalar<int>(sql, newKeep);
     }
 
+    internal object GetByProfile(string id)
+    {
+      string sql = @"
+      SELECT
+      k.*,
+      pr.*
+      FROM keeps k
+      JOIN profiles pr ON k.creatorId = pr.Id
+      WHERE k.creatorId = @id;";
+      return _db.Query<Keep, Profile, Keep>(sql, (keep, profile) => { keep.Creator = profile; return keep; }, new { id }, splitOn: "id");
+    }
+
     internal Keep Edit(Keep editKeep)
     {
       string sql = @"

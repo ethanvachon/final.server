@@ -53,6 +53,11 @@ namespace final.server.Services
       return _repo.Edit(editKeep);
     }
 
+    internal object GetByProfile(string id)
+    {
+      return _repo.GetByProfile(id);
+    }
+
     internal IEnumerable<VaultKeepsViewModel> GetByVaultId(int id)
     {
       return _repo.GetByVault(id);

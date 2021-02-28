@@ -51,11 +51,16 @@ namespace final.server.Controllers
     }
 
     [HttpGet("{id}")]
-    public ActionResult<Vault> GetOne(int id)
+    public async Task<ActionResult<Vault>> GetOneAsync(int id)
     {
       try
       {
-        return Ok(_vs.GetOne(id));
+        if (await HttpContext.GetUserInfoAsync<Profile>() == null)
+        {
+          return Ok(_vs.GetOne(id));
+        }
+        Profile userInfo = await HttpContext.GetUserInfoAsync<Profile>();
+        return Ok(_vs.GetOne(id, userInfo.Id));
       }
       catch (System.Exception e)
       {
