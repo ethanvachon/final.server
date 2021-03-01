@@ -35,7 +35,7 @@ namespace final.server.Controllers
     }
 
     [HttpDelete("{id}")]
-    public async System.Threading.Tasks.Task<ActionResult<string>> DeleteAsync(int id)
+    public async System.Threading.Tasks.Task<ActionResult<string>> Delete(int id)
     {
       try
       {

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CodeWorks.Auth0Provider;
 using final.server.Models;
@@ -14,10 +15,12 @@ namespace final.server.Controllers
   public class AccountController : ControllerBase
   {
     private readonly ProfilesService _ps;
+    private readonly VaultsService _vs;
 
-    public AccountController(ProfilesService ps)
+    public AccountController(ProfilesService ps, VaultsService vs)
     {
       _ps = ps;
+      _vs = vs;
     }
 
     [HttpGet]
@@ -27,6 +30,20 @@ namespace final.server.Controllers
       {
         Profile userInfo = await HttpContext.GetUserInfoAsync<Profile>();
         return Ok(_ps.GetOrCreateProfile(userInfo));
+      }
+      catch (System.Exception e)
+      {
+        return BadRequest(e.Message);
+      }
+    }
+
+    [HttpGet("vaults")]
+    public async Task<ActionResult<IEnumerable<Vault>>> GetAccountVaults()
+    {
+      try
+      {
+        Profile userInfo = await HttpContext.GetUserInfoAsync<Profile>();
+        return Ok(_vs.GetByAccount(userInfo.Id));
       }
       catch (System.Exception e)
       {

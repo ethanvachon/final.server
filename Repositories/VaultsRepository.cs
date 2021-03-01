@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using Dapper;
 using final.server.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace final.server.Repositories
 {
@@ -59,6 +60,18 @@ namespace final.server.Repositories
     }
 
     internal IEnumerable<Vault> GetByProfile(string id)
+    {
+      string sql = @"
+      SELECT 
+      v.*,
+      pr.*
+      FROM vaults v
+      JOIN profiles pr On v.creatorId = pr.id
+      WHERE v.creatorId = @id;";
+      return _db.Query<Vault, Profile, Vault>(sql, (vault, profile) => { vault.Creator = profile; return vault; }, new { id }, splitOn: "id");
+    }
+
+    internal IEnumerable<Vault> GetByAccount(string id)
     {
       string sql = @"
       SELECT 

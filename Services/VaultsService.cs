@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using final.server.Models;
 using final.server.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace final.server.Services
 {
@@ -66,6 +67,11 @@ namespace final.server.Services
         throw new Exception("cannot edit Vault if you aren't the creator");
       }
       return _repo.Edit(editVault);
+    }
+
+    internal IEnumerable<Vault> GetByAccount(string id)
+    {
+      return _repo.GetByAccount(id);
     }
 
     internal object GetByProfile(string id)
