@@ -63,6 +63,15 @@ namespace final.server.Services
       return _repo.GetByVault(id);
     }
 
+    internal Keep AddView(int id)
+    {
+      Keep keep = _repo.GetOne(id);
+      int views = keep.Views + 1;
+      keep.Views = views;
+      _repo.AddView(keep);
+      return keep;
+    }
+
     internal string Delete(int keepId, string accountId)
     {
       Keep preDelete = _repo.GetOne(keepId);

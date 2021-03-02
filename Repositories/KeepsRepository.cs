@@ -62,6 +62,26 @@ namespace final.server.Repositories
       return _db.Query<Keep, Profile, Keep>(sql, (keep, profile) => { keep.Creator = profile; return keep; }, new { id }, splitOn: "id");
     }
 
+    internal void AddKeep(Keep newKeep)
+    {
+      string sql = @"
+      UPDATE keeps
+      SET
+      keeps = @Keeps
+      WHERE id = @id;";
+      _db.Execute(sql, newKeep);
+    }
+
+    internal void AddView(Keep data)
+    {
+      string sql = @"
+      UPDATE keeps
+      SET
+      views = @views
+      WHERE id = @id;";
+      _db.Execute(sql, data);
+    }
+
     internal Keep Edit(Keep editKeep)
     {
       string sql = @"

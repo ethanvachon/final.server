@@ -47,6 +47,19 @@ namespace final.server.Controllers
       }
     }
 
+    [HttpPut("{id}/addview")]
+    public ActionResult<Keep> AddView(int id)
+    {
+      try
+      {
+        return Ok(_ks.AddView(id));
+      }
+      catch (System.Exception e)
+      {
+        return BadRequest(e.Message);
+      }
+    }
+
     [HttpPost]
     [Authorize]
     public async Task<ActionResult<Keep>> Create([FromBody] Keep newKeep)
